@@ -1,2 +1,4 @@
-# theorie-kunstlicher-neuronaler-netze-und-anwendung
-Facharbeit über die Theorie künstlicher neuronaler Netze und Anwendung am Beispiel von Bilderkennung
+# Theorie künstlicher neuronaler Netze und Anwendung am Beispiel von Bilderkennung
+Facharbeit im Rahmen des Mathematikunterrichts
+
+Von Lennart Kloock
