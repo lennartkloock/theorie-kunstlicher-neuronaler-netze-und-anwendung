@@ -1,0 +1,84 @@
+%! Author = Lennart Kloock
+
+\documentclass[11pt]{article}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{tocloft}
+\usepackage[ngerman]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{hyphenat}
+\usepackage[bottom]{footmisc}
+\usepackage[backend=biber,citestyle=authortitle]{biblatex}
+\usepackage{csquotes}
+\usepackage{subcaption}
+\usepackage[
+    hidelinks,
+    pdfauthor={Lennart Kloock},
+    pdftitle={Theorie kuenstlicher neuronaler Netze und Anwendung am Beispiel von Bilderkennung}
+]{hyperref}
+\usepackage{amssymb}
+\usepackage{lipsum}
+
+\addbibresource{quellen.bib}
+\geometry{a4paper, left=4cm, right=2cm, top=2cm, bottom=2cm}
+\renewcommand{\baselinestretch}{1.5}
+\hyphenation{Mathe-matik wieder-gewinnen}
+\makeatletter\newcommand{\lofwithouttitle}{\@starttoc{lof}}\makeatother
+
+% Um die Nummern im Literaturverzeichnis zu verstecken.
+\DeclareFieldFormat{labelnumberwidth}{}
+\setlength{\biblabelsep}{0pt}
+
+\begin{document}
+
+    \pagenumbering{gobble}
+    \begin{titlepage}
+        \begin{center}
+            \vspace*{1cm}
+            \Huge
+            \textbf{Theorie künstlicher neuronaler Netze und Anwendung am Beispiel von Bilderkennung}\\
+
+            \vspace{0.5cm}
+            \LARGE
+            Facharbeit im Rahmen des Mathematikunterrichts\\
+
+            \vspace{1.5cm}
+            \textbf{Lennart Kloock}\\
+
+            \vfill
+            \large
+            Albert-Schweitzer-Gymnasium Hürth\\
+            Fachlehrerin: Frau Marschner\\
+
+            \vspace{0.5cm}
+            Eingereicht am 29.~März~2021
+        \end{center}
+    \end{titlepage}
+
+    \tableofcontents
+    \pagebreak
+
+    \pagenumbering{arabic}
+    \setcounter{page}{3}
+
+    \input{einleitung}
+
+    \input{geschichte}
+    \pagebreak
+
+    \input{aufbau_und_funktionsweise}
+    \pagebreak
+
+    \input{training}
+    \pagebreak
+
+    \input{anwendung}
+    \pagebreak
+
+    \input{fazit}
+
+    \input{anhang}
+
+\end{document}
