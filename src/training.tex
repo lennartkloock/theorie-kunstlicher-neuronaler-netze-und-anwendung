@@ -1,0 +1,118 @@
+\section{Der Trainingsprozess}\label{sec:training}
+In dem in den vorherigen Abschnitten beschriebenen Modell lassen sich bereits Daten eingeben und mithilfe des Feedforward-Verfahrens Ausgabedaten errechnen.
+Doch passende Ausgabedaten lassen sich nur errechnen, wenn auch alle Gewichtungen und Biases auf das Problem, das das künstliche neuronale Netz lösen soll, angepasst sind.
+Das gezielte Verändern dieser Variablen wird Trainieren eines KNNs genannt.
+Während des Trainier-~bzw.~Lernprozesses wird das KNN schrittweise immer besser darin, Eingabedaten die richtigen Ausgabedaten zuzuordnen.
+~\footcite{3b1b-2}
+
+\subsection{Berechnung der Kosten}\label{subsec:kosten}
+Um ein KNN zu trainieren, ist es essenziell zu wissen, wie gut die Ergebnisse des Netzes sind.
+Indem das Feedforward-Verfahren auf Eingabedaten mit bekannten Ausgabedaten angewendet wird, lässt sich errechnen, wie stark sich das Ergebnis des Netzes vom eigentlich erwarteten Ergebnis unterscheidet.
+Diese Differenz wird Fehler oder auch Kosten genannt und stellt dar, wie sehr sich das Netz mit seinem errechneten Ergebnis irrt.
+Gegeben seien die Eingabe- und dazu passenden Ausgabedaten $d$ mit \[d = ((x_1, x_2, \dots, x_{N^1}), (y_1, y_2, \dots, y_{N^L})),\] wobei $x_n$ den Eingabewert für das $n$-te Neuron in der ersten Ebene darstellt und $y_n$ den $n$-ten, zu den Eingabedaten passenden, Ausgabewert in der letzten Ebene ($L$-te Ebene).
+Die Kosten eines KNN mit $L$ Ebenen lassen sich nun als eine von $d$, $\overline{w}$ und $\overline{b}$ abhängige Funktion definieren.
+Die Abhängigkeit der Kosten von $d$, $\overline{w}$ und $\overline{b}$ drückt sich im folgenden Ausdruck durch $a^l_n$ aus, da der Wert von $a^l_n$ aus diesen Abhängigkeiten resultiert.
+~\footcite{3b1b-2}
+\begin{equation}
+    K_d = \sum\limits^{N^L}_{i=1}(a^L_i - y_i)^2
+    \label{eq:kosten}
+\end{equation}
+
+\subsection{Gradientenverfahren}\label{subsec:gradientenverfahren}
+Während des Trainingsprozesses werden Gewichtungen und Biases gezielt verändert, um die durchschnittlichen Kosten möglichst an ein Minimum anzunähern.
+Da die Kostenfunktion aber viele Funktionsargumente besitzt (alle Gewichtungen und Biases des Netzes), kann nicht so einfach ein Minimum der Kosten gefunden werden.
+Die klassischen Verfahren zum Bestimmen von Minima sind auf eine so komplexe Funktion wie die Kostenfunktion nicht anwendbar, da sie oft von Millionen von Gewichtungen und Biases abhängig ist.
+Um ein lokales Minimum dieser Funktion zu finden, wird stattdessen das sogenannte Gradientenverfahren angewendet, welches unabhängig von der Anzahl an Funktionsargumenten funktioniert.
+Das Gradientenverfahren besteht darin, ein Minimum der Kostenfunktion durch schrittweise Annäherung an dieses zu finden.
+Um einen den Wert zu finden, um den jedes der Funktionsargumente geändert werden muss, um eine Verringerung der Kosten zu bewirken, wird die partielle Ableitung $\frac{\partial K_d}{\partial w^l_{n p}}$ bzw.~$\frac{\partial K_d}{\partial b^l_n}$ berechnet.
+Für eine Minimierung der Kosten wird die Gewichtung bzw.~der Bias nun um den negativen Wert der jeweiligen partiellen Ableitung geändert.
+Das Vorzeichen der Ableitung muss umgekehrt werden, da sich der Kostenwert verringern soll.
+Der Wert $\Delta w^l_{n p}$ bzw.~$\Delta b^l_n$ beschreibt den Wert, um den die Gewichtung bzw.~der Bias geändert wird.
+Die Werte sind deshalb definiert durch die folgenden Ausdrücke.
+~\footcite{3b1b-2,weitz}
+\begin{align}
+    \Delta w^l_{n p} &= -\frac{\partial K_d}{\partial w^l_{n p}}
+    \label{eq:delta-w}\\
+    \Delta b^l_n &= -\frac{\partial K_d}{\partial b^l_n}
+    \label{eq:delta-b}
+\end{align}
+
+\subsection{Fehlerrückführung}\label{subsec:fehlerruckfuhrung}
+Um die partielle Ableitung der Kostenfunktion nach einem der Funktionsargumente zu bestimmen, wird die sogenannte Fehlerrückführung (engl. \textit{Backpropagation} oder \textit{Backpropagation of Error}) angewendet.
+Die Fehlerrückführung startet damit, die partiellen Ableitungen nach den Gewichtungen und Biases (siehe~\eqref{eq:delta-w} und~\eqref{eq:delta-b}) der letzten Ebene zu berechnen.
+Um diese partiellen Ableitungen zu berechnen, wird die Kettenregel genutzt.
+In der Regel wird eine verkettete Funktion erst wegen der Kettenregel in mehrere Funktionen aufgeteilt, doch im Fall eines KNNs liegen die verschiedenen Kettenglieder bereits als mehrere Funktionen vor.
+Bei den Kettengliedern handelt es sich um die gewichtete Summe, den aktivierten Wert eines Neurons und die Kostenfunktion.
+Wenn nun beispielsweise die Ableitung der Kostenfunktion nach einer gewichteten Summe ($z^l_n$) bestimmt werden muss, kann diese mithilfe der Kettenregel in die partielle Ableitung der Kosten nach der aktivierten gewichteten Summe ($a^l_n$) und die partielle Ableitung der aktivierten gewichteten Summe ($a^l_n$) nach der gewichteten Summe ($z^l_n$) aufgeteilt werden.
+~\footcite{3b1b-3}
+
+\subsubsection{Gewichtungen}
+Vorerst wird die partielle Ableitung der Kostenfunktion nach einer Gewichtung in zwei Kettenglieder geteilt.
+\begin{equation}
+    \frac{\partial K_d}{\partial w^l_{n p}} = \frac{\partial K_d}{\partial z^l_n} \frac{\partial z^l_n}{\partial w^l_{n p}}
+    \label{eq:K-w}
+\end{equation}
+Um $\frac{\partial z^l_n}{\partial w^l_{n p}}$ zu berechnen, wird die Funktion $z$ nach $w^l_{n p}$ abgeleitet, welches nach Ausdruck~\eqref{eq:z-neu} in folgendem Ausdruck resultiert.
+\begin{equation}
+    \frac{\partial z^l_n}{\partial w^l_{n p}} = a^{l-1}_p
+    \label{eq:z-w}
+\end{equation}
+Um $\frac{\partial K_d}{\partial z^l_n}$ zu berechnen, wird unterschieden, ob sich das Neuron auf der letzten Ebene oder innerhalb des Netzes befindet.
+Für den Fall, dass sich das Neuron auf der letzten Ebene befindet, werden die Kettenglieder weiter aufgeteilt und für $\frac{\partial K_d}{\partial z^l_n}$ gilt folgende partielle Ableitung:
+\begin{align}
+    \frac{\partial K_d}{\partial z^L_n} = \frac{\partial K_d}{\partial a^L_n} \frac{\partial a^L_n}{\partial z^L_n}
+    \label{eq:K-z-letzte-ebene}
+\end{align}
+Die partielle Ableitung der Funktion $a$ nach $z^l_n$ entspricht der Ableitung der Aktivierungsfunktion, was aus~\eqref{eq:a-neu} hervorgeht.
+\begin{equation}
+    \frac{\partial a^l_n}{\partial z^l_n} = \varphi'(z^l_n)
+    \label{eq:a-z}
+\end{equation}
+Nach~\eqref{eq:kosten} gilt für $\frac{\partial K_d}{\partial a^L_n}$ folgender Ausdruck:
+\begin{equation}
+    \frac{\partial K_d}{\partial a^L_n} = 2(a^L_n - y_n)
+    \label{eq:K-a}
+\end{equation}
+Falls das Neuron, zu dem die Gewichtung führt, sich nicht auf der letzten Ebene des Netzes befindet, ist die Ableitung nach dieser Gewichtung von den Ableitungen der gewichteten Summen der Neuronen der nachfolgenden Ebene abhängig.
+Ein Neuron, welches sich nicht in der letzten Ebene befindet, nimmt nicht nur über eine Verbindung Einfluss auf die Kosten, sondern über mehrere Neuronen der nächsten Ebenen.
+Einfluss bedeutet hier, wie stark Veränderungen im Wert des Arguments sich auf den Wert der Funktion auswirken.
+Das bedeutet, dass $\frac{\partial K_d}{\partial z^l_n}$ der Summe der einzelnen partiellen Ableitungen der Kostenfunktion nach der gewichteten Summe entspricht.
+\begin{align}
+    \frac{\partial K_d}{\partial z^l_n}
+    &= \sum\limits^{N^{l+1}}_{i=1} \frac{\partial K_d}{\partial a^{l+1}_i} \frac{\partial a^{l+1}_i}{\partial z^{l+1}_i} \frac{\partial z^{l+1}_i}{\partial a^l_n} \frac{\partial a^l_n}{\partial z^l_n}&, l < L\\
+    &= \sum\limits^{N^{l+1}}_{i=1} \frac{\partial K_d}{\partial z^{l+1}_i} \frac{\partial z^{l+1}_i}{\partial a^l_n} \frac{\partial a^l_n}{\partial z^l_n}
+    \label{eq:K-z-nicht-letzte-ebene}
+\end{align}
+Hier wird der Vorteil der Fehlerrückführung klar.
+Da mit der Fehlerrückführung zuerst die Ableitungen der hinteren Ebenen berechnet werden, ist der Wert von $\frac{\partial K_d}{\partial z^{l+1}_i}$ bereits bekannt und kann genutzt werden um weitere Ableitungen der Ebene $l$ zu berechnen.
+Auch diese Ableitungen werden benutzt, um die Ableitungen der Ebene davor ($l-1$) zu berechnen.\\
+Ausdruck~\eqref{eq:K-z-letzte-ebene} und~\eqref{eq:K-z-nicht-letzte-ebene} lassen sich nun zu folgendem Ausdruck kombinieren.
+~\footcite{3b1b-4}
+\begin{equation}
+    \frac{\partial K_d}{\partial z_n^l} =
+    \begin{cases}
+        \frac{\partial K_d}{\partial a_n^L} \cdot \varphi'(z^L_n)&, l = L \\
+        \sum\limits^{N^{l+1}}_{i=1} \frac{\partial K_d}{\partial a^{l+1}_i} \frac{\partial a^{l+1}_i}{\partial z^{l+1}_i} \frac{\partial z^{l+1}_i}{\partial a^l_n} \frac{\partial a^l_n}{\partial z^l_n}&, l < L
+    \end{cases}
+    \label{eq:K-z}
+\end{equation}
+
+\subsubsection{Biases}
+Um den Wert zu berechnen um den ein Bias $b^l_n$ verändert werden muss, wird ähnlich wie bei den Gewichtungen vorgegangen.
+Dieser Wert heißt $\Delta b^l_n$ und ist definiert durch~\eqref{eq:delta-b}.
+$\frac{\partial K_d}{\partial b^l_n}$ lässt sich mithilfe der Kettenregel in folgende Multiplikation auflösen.
+~\footcite{3b1b-4}
+\begin{equation}
+    \frac{\partial K_d}{\partial b^l_n} = \frac{\partial K_d}{\partial z^l_n} \frac{\partial z^l_n}{\partial b^l_n}
+    \label{eq:K-b}
+\end{equation}
+Der Wert von $\frac{\partial K_d}{\partial z^l_n}$ ist bereits aus~\eqref{eq:K-z} bekannt und die partielle Ableitung von $z^l_n$ nach $b^l_n$ entspricht bei Betrachtung von~\eqref{eq:z-neu} folgendem Ausdruck.
+\begin{equation}
+    \frac{\partial z^l_n}{\partial b^l_n} = 1
+    \label{eq:z-b}
+\end{equation}
+Daraus folgt
+\begin{equation}
+    \Delta b^l_n = -\frac{\partial K_d}{\partial z^l_n}~.
+    \label{eq:delta-b-neu}
+\end{equation}
